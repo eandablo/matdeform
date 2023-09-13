@@ -21,7 +21,10 @@ def first_machine_move():
     prints the first outline with the first move from the computer
     """
     floor_random=random.randint(3,size=3)
-    floors[floor_random[0]].assign_value(floor_random[1],floor_random[2],'M')
+    update_floor(floor_random,'M')
+
+def update_floor(data,mover):
+    floors[data[0]].assign_value(data[1],data[2],mover)
     for floor in floors:
         print(floor.print_floor())
 
@@ -32,19 +35,24 @@ def get_user_move():
     later validates the entries
     """
     print('Please chose your move, providing 3 numbers from 1 to 3')
+    user_move=[]
     while True:
-        floor = input('Enter floor number, 1 for Bottom, 2 for mid or 3 for top:\n')
-        if validate_number(floor):
+        move = input('Enter floor number, 1 for Bottom, 2 for mid or 3 for top:\n')
+        if validate_number(move):
             break
+    user_move.append(int(move))
     while True:
-        horizontal = input('Enter the horizontal position:\n')
-        if validate_number(horizontal):
+        move = input('Enter the horizontal position:\n')
+        if validate_number(move):
             break
+    user_move.append(int(move))
     while True:
-        vertical = input('Enter the vertical position:\n')
-        if validate_number(vertical):
+        move = input('Enter the vertical position:\n')
+        if validate_number(move):
             break
-
+    user_move.append(int(move)-1)
+    update_floor(user_move,'Y')
+    
 def validate_number(num):
     """
     Checks that entry is a number between 1 and 3
@@ -57,7 +65,6 @@ def validate_number(num):
         print(f'Invalid position:{e}')
         return False
     return True
-
 
 class GameFloor:
     """
@@ -85,7 +92,6 @@ class GameFloor:
 
 #data structure for the floors information
 floors=[GameFloor('Top'),GameFloor('Mid'),GameFloor('Bottom')]
-
 
 def main():
     start_game()
