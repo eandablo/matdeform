@@ -32,26 +32,32 @@ def get_user_move():
     """
     gets the user entries for positions
     asks for floor number, x position and y position
-    later validates the entries
+    validates the entries and updates floors array
     """
-    print('Please chose your move, providing 3 numbers from 1 to 3')
-    user_move=[]
     while True:
-        move = input('Enter floor number, 1 for Bottom, 2 for mid or 3 for top:\n')
-        if validate_number(move):
+        print('Please chose your move, providing 3 numbers from 1 to 3')
+        user_move=[]
+        while True:
+            move = input('Enter floor number, 1 for Bottom, 2 for mid or 3 for top:\n')
+            if validate_number(move):
+                break
+        user_move.append(int(move)-1)
+        while True:
+            move = input('Enter the horizontal position:\n')
+            if validate_number(move):
+                break
+        user_move.append(int(move)-1)
+        while True:
+            move = input('Enter the vertical position:\n')
+            if validate_number(move):
+                break
+        user_move.append(int(move)-1)
+        if empty_point(user_move):
             break
-    user_move.append(int(move))
-    while True:
-        move = input('Enter the horizontal position:\n')
-        if validate_number(move):
-            break
-    user_move.append(int(move))
-    while True:
-        move = input('Enter the vertical position:\n')
-        if validate_number(move):
-            break
-    user_move.append(int(move)-1)
+        else:
+            print('Space is not free, please choose a free point')
     update_floor(user_move,'Y')
+
     
 def validate_number(num):
     """
@@ -65,6 +71,15 @@ def validate_number(num):
         print(f'Invalid position:{e}')
         return False
     return True
+
+def empty_point(data):
+    """
+    validates if user entry is already busy
+    """
+    if floors[data[0]].floor_squares[data[1]][data[2]]=='O':
+        return True
+    else:
+        return False
 
 class GameFloor:
     """
@@ -91,7 +106,7 @@ class GameFloor:
         return ""
 
 #data structure for the floors information
-floors=[GameFloor('Top'),GameFloor('Mid'),GameFloor('Bottom')]
+floors=[GameFloor('Bottom'),GameFloor('Mid'),GameFloor('Top')]
 
 def main():
     start_game()
