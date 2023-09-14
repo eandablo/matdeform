@@ -70,12 +70,12 @@ def get_user_move():
                 break
         user_move.append(int(move)-1)
         while True:
-            move = input('Enter the horizontal position:\n')
+            move = input('Enter the vertical position:\n')
             if validate_number(move):
                 break
         user_move.append(int(move)-1)
         while True:
-            move = input('Enter the vertical position:\n')
+            move = input('Enter the horizontal position:\n')
             if validate_number(move):
                 break
         user_move.append(int(move)-1)
@@ -107,18 +107,22 @@ def empty_point(data):
     else:
         return False
 
-def check_floor_win(data,user):
+def check_individual_floor(data,user):
     """
     converts data into a numpy matrix to perform math
     data takes a floor class and user takes either 'M' or 'Y'
     """
     floor_matrix=np.zeros((3,3),dtype=int)
+    floor_matrix_mirror=np.zeros((3,3),dtype=int)
     for i in range(3):
         for j in range(3):
             if data[i][j] == user:
                 floor_matrix[i,j]=1
-    
-    
+                floor_matrix_mirror[i,2-j]=1
+    sum_row=np.append(np.sum(floor_matrix,axis=0),np.sum(floor_matrix,axis=1))
+    sum_row=np.append(sum_row,np.trace(floor_matrix))
+    sum_row=np.append(sum_row,np.trace(floor_matrix_mirror))
+    return 3 in sum_row
 
 """
 variable floors is a structure containing all three separated floors
@@ -128,8 +132,9 @@ floors=[GameFloor('Bottom'),GameFloor('Mid'),GameFloor('Top')]
 
 def main():
     start_game()
-    get_user_move()
-    check_floor_win(floors[0].floor_squares,'Y')
-
+    while True:
+        get_user_move()
+        if check_individual_floor(floors[0].floor_squares,'Y'):
+            break
 
 main()
