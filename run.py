@@ -42,13 +42,16 @@ def start_game():
 def random_machine_move():
     """
     creates a random move from the machine
-    assigns the 
-    prints the first outline with the first move from the computer
     """
     floor_random=np.random.randint(3,size=3)
     update_floor(floor_random,'M')
 
 def update_floor(data,mover):
+    """
+    update floor with either machine or user move
+    variable data is a list of numbers for [floor,vertical,horizontal]
+    finally prints the layout
+    """
     floors[data[0]].assign_value(data[1],data[2],mover)
     for floor in floors:
         print(floor.print_floor())
@@ -101,15 +104,21 @@ def validate_number(num):
 def empty_point(data):
     """
     validates if user entry is already busy
+    data is a list of numbers for [floor,vertical,horizontal]
     """
-    if floors[data[0]].floor_squares[data[1]][data[2]]=='O':
+    if floors[data[0]].floor_squares[data[1]][data[2]] == 'O':
         return True
     else:
         return False
 
-def check_individual_floor(data,user):
+def machine_intel_move():
     """
-    converts data into a numpy matrix to perform math
+    
+    """
+
+def summarize_floor(data,user):
+    """
+    converts data variable containing a floor into a numpy matrix
     data takes a floor class and user takes either 'M' or 'Y'
     """
     floor_matrix=np.zeros((3,3),dtype=int)
@@ -122,7 +131,7 @@ def check_individual_floor(data,user):
     sum_row=np.append(np.sum(floor_matrix,axis=0),np.sum(floor_matrix,axis=1))
     sum_row=np.append(sum_row,np.trace(floor_matrix))
     sum_row=np.append(sum_row,np.trace(floor_matrix_mirror))
-    return 3 in sum_row
+    return sum_row
 
 """
 variable floors is a structure containing all three separated floors
@@ -132,9 +141,7 @@ floors=[GameFloor('Bottom'),GameFloor('Mid'),GameFloor('Top')]
 
 def main():
     start_game()
-    while True:
-        get_user_move()
-        if check_individual_floor(floors[0].floor_squares,'Y'):
-            break
+    get_user_move()
+    print(summarize_floor(floors[0].floor_squares,'Y'))
 
 main()
