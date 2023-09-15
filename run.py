@@ -12,9 +12,9 @@ class GameFloor:
     """
     def __init__(self,floor):
         self.floor_squares=[
-            ['O','O','O'],
-            ['O','O','O'],
-            ['O','O','O']
+            ['?','?','?'],
+            ['?','?','?'],
+            ['?','?','?']
         ]
         self.floor = floor
 
@@ -106,15 +106,31 @@ def empty_point(data):
     validates if user entry is already busy
     data is a list of numbers for [floor,vertical,horizontal]
     """
-    if floors[data[0]].floor_squares[data[1]][data[2]] == 'O':
+    if floors[data[0]].floor_squares[data[1]][data[2]] == '?':
         return True
     else:
         return False
 
 def machine_intel_move():
     """
-    
+    Decides the next move from the machine by analising the floors 
     """
+    for floor in floors:
+        machine_lines_sum=summarize_floor(floor.floor_squares,'M')
+        if 2 in machine_lines_sum:
+            find_winning_spot(floor,machine_lines_sum)
+
+    
+def find_winning_spot(floor,data):
+    """
+    Takes data with sum of lines and find index of potentially winning spots
+    """ 
+    vertical_sum=data[:3]
+    horizontal_sum=data[3:6]
+    trace=data[6]
+    trace2=data[7]
+#    if 2 in vertical_sum:
+        
 
 def summarize_floor(data,user):
     """
@@ -133,15 +149,36 @@ def summarize_floor(data,user):
     sum_row=np.append(sum_row,np.trace(floor_matrix_mirror))
     return sum_row
 
-"""
-variable floors is a structure containing all three separated floors
-each floor structure is obtained by assigning a class GameFloor
-"""
+def sumarize_columns(user):
+    """
+    sums columns and return values for the user
+    """
+    column_sum=np.zeros((3,3),dtype=int)
+    for i in range(3):
+        for j in range(3):
+            addition=0
+            for floor in floors:
+                if floor.floor_squares[i][j]==user:
+                    addition+=1
+            column_sum[i,j]=addition
+    return column_sum
+
+
+#variable floors is a structure containing all three separated floors
+#each floor structure is obtained by assigning a class GameFloor
 floors=[GameFloor('Bottom'),GameFloor('Mid'),GameFloor('Top')]
 
 def main():
     start_game()
-    get_user_move()
-    print(summarize_floor(floors[0].floor_squares,'Y'))
+    while True:
+        get_user_move()
+        column_count=sumarize_columns('Y')
+        print(column_count)
+        if 3 in column_count:
+            break
+        floor_count=summarize_floor(floors[0].floor_squares,'Y')
+        if 3 in floor_count:
+            break
+#    machine_intel_move()
 
 main()
