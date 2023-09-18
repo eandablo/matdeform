@@ -301,14 +301,25 @@ def main():
     start_game()
     while True:
         get_user_move()
-        machine_intel_move()
         column_count=sumarize_columns('Y')
         if 3 in column_count:
-            break
-        floor_count=summarize_floor(floors[0].floor_squares,'Y')
-        if 3 in floor_count:
-            break
-#    machine_intel_move()
+            print('You win by completing a column')
+            return
+        for floor in floors:
+            floor_count=summarize_floor(floor.floor_squares,'Y')
+            if 3 in floor_count:
+                print('You win by by completing a winning a floor')
+                return
+        machine_intel_move()
+        column_count=sumarize_columns('M')
+        if 3 in column_count:
+            print('You lose')
+            return
+        for floor in floors:
+            floor_count=summarize_floor(floor.floor_squares,'M')
+            if 3 in floor_count:
+                print('You lose')
+                return
     
 
 main()
