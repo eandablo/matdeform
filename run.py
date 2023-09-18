@@ -123,18 +123,26 @@ def machine_intel_move():
     """
     Decides the next move from the machine by analising the floors 
     """
-#    win_move=find_critical_spot('M')  #winning move
-#    if win_move:
-#        update_floor(win_move,'M')
-#        return
-    block_move=find_critical_spot('Y')  #blocking move
+    win_move=find_critical_by_floor('M')  #winning move by floor
+    if win_move:
+        update_floor(win_move,'M')
+        return
+    block_move=find_critical_by_floor('Y')  #blocking move by floor
+    if block_move:
+        update_floor(block_move,'M')
+        return
+    win_move=find_critical_column('M')  #winning move by column
+    if win_move:
+        update_floor(win_move,'M')
+        return
+    block_move=find_critical_column('Y') #blocking move by column
     if block_move:
         update_floor(block_move,'M')
         return
     move=machine_kernel_move()
     update_floor(move,'M')
-    
-def find_critical_spot(mover):
+
+def find_critical_by_floor(mover):
     """
     Find rows and lines with two spaces marked by the same user
     """ 
@@ -188,6 +196,28 @@ def find_critical_spot(mover):
                 return next_move
         floor_num+=1
 
+    return False
+
+def find_critical_column(mover):
+    """
+    Find columns with potential win for mover
+    """ 
+    if mover=='M':
+        contender='Y'
+    else:
+        contender='M'
+    column_sum=sumarize_columns(mover)
+    column_sum_contender=sumarize_columns(contender)
+    for i in range(3):
+        for j in range(3):
+            if column_sum[i,j]==2 and column_sum_contender[i,j]==0:
+                floor_num=0
+                for floor in floors:
+                    if floor.floor_squares[i][j]==" ":
+                        next_move=[floor_num,i,j]
+                        break
+                    floor_num+=1
+                return next_move
     return False
 
 def summarize_floor(data,user):
