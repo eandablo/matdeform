@@ -12,9 +12,9 @@ class GameFloor:
     """
     def __init__(self,floor):
         self.floor_squares=[
-            ['?','?','?'],
-            ['?','?','?'],
-            ['?','?','?']
+            [' ',' ',' '],
+            [' ',' ',' '],
+            [' ',' ',' ']
         ]
         self.floor = floor
 
@@ -23,8 +23,12 @@ class GameFloor:
 
     def print_floor(self):
         print(f'{self.floor} floor')
+        i=0
         for row in self.floor_squares:
-            print(row)
+            print(f' {row[0]} ¦ {row[1]} ¦ {row[2]}')
+            if i<2:
+                print('-----------') 
+            i+=1
         return ""
 
 
@@ -35,8 +39,9 @@ def start_game():
     """
     print('This is a 3D tic tac toe game, it consist of three floors of the classic game')
     print('You need to win conventianally 2 of the 3 floors or connecting the 3 floors with a vertival line, by choosing a move 1 floor at the time')
-    print('You will play against the machine, empty spots are marked as O')
+    print('You will play against the machine')
     print('The machine moves are marked as M, your moves are marked as Y. Machine moves first')
+    input('Press enter to start')
     random_machine_move()
 
 def random_machine_move():
@@ -54,8 +59,9 @@ def update_floor(data,mover):
     finally prints the layout
     """
     floors[data[0]].assign_value(data[1],data[2],mover)
-    for floor in floors:
-        print(floor.print_floor())
+    if mover=='M':
+        for floor in floors:
+            print(floor.print_floor())
 
 def get_user_move():
     """
@@ -108,7 +114,7 @@ def empty_point(data):
     validates if user entry is already busy
     data is a list of numbers for [floor,vertical,horizontal]
     """
-    if floors[data[0]].floor_squares[data[1]][data[2]] == '?':
+    if floors[data[0]].floor_squares[data[1]][data[2]] == ' ':
         return True
     else:
         return False
@@ -117,24 +123,73 @@ def machine_intel_move():
     """
     Decides the next move from the machine by analising the floors 
     """
-#    for floor in floors:
-#        machine_lines_sum=summarize_floor(floor.floor_squares,'M')
-#        if 2 in machine_lines_sum:
-#            find_winning_spot(floor,machine_lines_sum)
+#    win_move=find_critical_spot('M')  #winning move
+#    if win_move:
+#        update_floor(win_move,'M')
+#        return
+    block_move=find_critical_spot('Y')  #blocking move
+    if block_move:
+        update_floor(block_move,'M')
+        return
     move=machine_kernel_move()
-    print(move)
     update_floor(move,'M')
     
-def find_critical_spot(floor,data):
+def find_critical_spot(mover):
     """
-    Takes data with sum of lines and find index of potentially winning spots
+    Find rows and lines with two spaces marked by the same user
     """ 
-    vertical_sum=data[:3]
-    horizontal_sum=data[3:6]
-    trace=data[6]
-    trace2=data[7]
-#    if 2 in vertical_sum:
-        
+    if mover=='M':
+        contender='Y'
+    else:
+        contender='M'
+    floor_num=0
+    for floor in floors:
+        lines_sum=summarize_floor(floor.floor_squares,mover)
+        ver_sum=lines_sum[:3]
+        hor_sum=lines_sum[3:6]
+        trace=lines_sum[6]
+        antitrace=lines_sum[7]
+        lines_sum_contender=summarize_floor(floor.floor_squares,contender)
+        ver_sum_contender=lines_sum_contender[:3] #sum of columns
+        hor_sum_contender=lines_sum_contender[3:6]  #sum of rows
+        trace_contender=lines_sum_contender[6]
+        antitrace_contender=lines_sum_contender[7]
+        if 2 in ver_sum:
+            index_mover=np.where(ver_sum==2)[0]
+            for index_2 in index_mover:
+                if ver_sum_contender[index_2]==0:
+                    for i in range(3):
+                        if floor.floor_squares[i][index_2]==" ":
+                            next_move=[floor_num,i,index_2]
+                            break
+                    return next_move
+        if 2 in hor_sum:
+            index_mover=np.where(hor_sum==2)[0]
+            for index_1 in index_mover:
+                if hor_sum_contender[index_1]==0:
+                    for i in range(3):
+                        if floor.floor_squares[index_1][i]==" ":
+                            next_move=[floor_num,index_1,i]
+                            break
+                    return next_move
+        if trace==2:
+            if trace_contender==0:
+                for i in range(3):
+                    if floor.floor_squares[i][i]==" ":
+                        next_move=[floor_num,i,i]
+                        break
+                return next_move
+        if antitrace==2:
+            if antitrace_contender==0:
+                for i in range(3):
+                    if floor.floor_squares[i][2-i]==" ":
+                        next_move=[floor_num,i,2-i]
+                        break
+                return next_move
+        floor_num+=1
+
+    return False
+
 def summarize_floor(data,user):
     """
     converts data variable containing a floor into a numpy matrix
@@ -190,7 +245,6 @@ def machine_kernel_move():
             for j in range(3):
                 if merge_matrix[i,j]==1:
                     prob_matrix[i,j]=0
-        print(prob_matrix)
         max_val.append(prob_matrix.max())
         v_max=np.argmax(prob_matrix)//3
         h_max=np.argmax(prob_matrix)-v_max*3
