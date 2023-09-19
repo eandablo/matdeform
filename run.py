@@ -2,7 +2,7 @@
 # You can delete these comments, but do not change the name of this file
 # Write your code to expect a terminal of 80 characters wide and 24 rows high
 import numpy as np
-from art import *
+import art
 import time
 
 
@@ -39,7 +39,7 @@ class GameFloor:
             time.sleep(0.1)
             print(f' {row[0]} ¦ {row[1]} ¦ {row[2]}')
             if i < 2:
-                print('-----------') 
+                print('-----------')
             i += 1
         return ""
 
@@ -49,7 +49,7 @@ def start_game():
     Writes the initial message of the site
     calculates the first move given by the computer using a random generator
     """
-    tprint('3D TIC TAC')
+    art.tprint('3D TIC TAC')
     print('1 .- Instructions')
     print('2 .- Play')
     print('Please choose by entering the correct number')
@@ -222,7 +222,7 @@ def machine_intel_move():
 def find_critical_by_floor(mover):
     """
     Find rows and lines with two spaces marked by the same user
-    """ 
+    """
     if mover == 'M':
         contender = 'Y'
     else:
@@ -288,11 +288,11 @@ def find_critical_column(mover):
     column_sum_contender = sumarize_columns(contender)
     for i in range(3):
         for j in range(3):
-            if column_sum[i,j] == 2 and column_sum_contender[i,j] == 0:
+            if column_sum[i, j] == 2 and column_sum_contender[i, j] == 0:
                 floor_num = 0
                 for floor in floors:
                     if floor.floor_squares[i][j] == " ":
-                        next_move = [floor_num,i, j]
+                        next_move = [floor_num, i, j]
                         break
                     floor_num += 1
                 return next_move
@@ -309,12 +309,14 @@ def summarize_floor(data, user):
     for i in range(3):
         for j in range(3):
             if data[i][j] == user:
-                floor_matrix[i,j] = 1
-                floor_matrix_mirror[i,2-j] = 1
-    sum_row = np.append(np.sum(floor_matrix, axis=0), np.sum(floor_matrix, axis=1))
+                floor_matrix[i, j] = 1
+                floor_matrix_mirror[i, 2-j] = 1
+    sum_row = np.append(np.sum(floor_matrix, axis=0), np.sum(floor_matrix,
+                        axis=1))
     sum_row = np.append(sum_row, np.trace(floor_matrix))
     sum_row = np.append(sum_row, np.trace(floor_matrix_mirror))
     return sum_row
+
 
 def sumarize_columns(user):
     """
@@ -336,48 +338,50 @@ def machine_kernel_move():
     uses kernels to calculate the probability matrices
     """
     max_val = []
-    max_val_coor=[]
+    max_val_coor = []
     for floor in floors:
-        machine_multiplier=np.zeros((3,3),dtype=int)
-        user_multiplier=np.zeros((3,3),dtype=int)
-        
+        machine_multiplier = np.zeros((3, 3), dtype=int)
+        user_multiplier = np.zeros((3, 3), dtype=int)
         for i in range(3):
             for j in range(3):
-                if floor.floor_squares[i][j]=='M':
-                    machine_multiplier[i,j]=1
-                if floor.floor_squares[i][j]=='Y':
-                    user_multiplier[i,j]=1
-        prob_matrix=np.add(np.matmul(machine_multiplier,machine_kernel),
-                           np.matmul(user_multiplier,user_kernel))
-        prob_matrix=np.add(prob_matrix,np.random.rand(3,3))
-        merge_matrix=np.add(machine_multiplier,user_multiplier)
+                if floor.floor_squares[i][j] == 'M':
+                    machine_multiplier[i, j] = 1
+                if floor.floor_squares[i][j] == 'Y':
+                    user_multiplier[i, j] = 1
+        prob_matrix = np.add(np.matmul(machine_multiplier, machine_kernel),
+                             np.matmul(user_multiplier, user_kernel))
+        prob_matrix = np.add(prob_matrix, np.random.rand(3, 3))
+        merge_matrix = np.add(machine_multiplier, user_multiplier)
         for i in range(3):
             for j in range(3):
-                if merge_matrix[i,j]==1:
-                    prob_matrix[i,j]=0
+                if merge_matrix[i, j] == 1:
+                    prob_matrix[i, j] = 0
         max_val.append(prob_matrix.max())
-        v_max=np.argmax(prob_matrix)//3
-        h_max=np.argmax(prob_matrix)-v_max*3
-        max_val_coor.append([v_max,h_max])
-    max_global=max_val[0]
-    max_global_coor=max_val_coor[0]
-    max_floor=0
-    for i in range(1,3):
-        if max_val[i]>max_global:
-            max_global=max_val[i]
-            max_global_coor=max_val_coor[i]
-            max_floor=i
-    return [max_floor,max_global_coor[0],max_global_coor[1]]
+        v_max = np.argmax(prob_matrix)//3
+        h_max = np.argmax(prob_matrix)-v_max*3
+        max_val_coor.append([v_max, h_max])
+    max_global = max_val[0]
+    max_global_coor = max_val_coor[0]
+    max_floor = 0
+    for i in range(1, 3):
+        if max_val[i] > max_global:
+            max_global = max_val[i]
+            max_global_coor = max_val_coor[i]
+            max_floor = i
+    return [max_floor, max_global_coor[0], max_global_coor[1]]
 
-#variable floors is a structure containing all three separated floors
-#each floor structure is obtained by assigning a class GameFloor
-floors=[GameFloor('Bottom'),GameFloor('Mid'),GameFloor('Top')]
 
-#define kernels as random matrix for both machine and user 
-machine_kernel=np.random.rand(3,3)
-user_kernel=np.random.rand(3,3)
+# variable floors is a structure containing all three separated floors
+# each floor structure is obtained by assigning a class GameFloor
+floors = [GameFloor('Bottom'), GameFloor('Mid'), GameFloor('Top')]
+
+# define kernels as random matrix for both machine and user
+machine_kernel = np.random.rand(3, 3)
+user_kernel = np.random.rand(3, 3)
+
 
 def main():
     start_game()
+
 
 main()
