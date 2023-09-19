@@ -5,6 +5,7 @@ import numpy as np
 from art import *
 import time
 
+
 class GameFloor:
     """
     accomodates a 3 x 3 square game floor
@@ -12,34 +13,34 @@ class GameFloor:
     the first one updates the floor with the computer and user choices
     the second prints the floor
     """
-    def __init__(self,floor):
-        self.floor_squares=[
-            [' ',' ',' '],
-            [' ',' ',' '],
-            [' ',' ',' ']
+    def __init__(self, floor):
+        self.floor_squares = [
+            [' ', ' ', ' '],
+            [' ', ' ', ' '],
+            [' ', ' ', ' ']
         ]
         self.floor = floor
 
-    def assign_value(self,x,y,user):
+    def assign_value(self, x, y, user):
         self.floor_squares[x][y] = user
 
     def count_empties(self):
-        count=0
+        count = 0
         for row in self.floor_squares:
             for space in row:
-                if space==' ':
-                    count+=1
+                if space == ' ':
+                    count += 1
         return count
 
     def print_floor(self):
         print(f'{self.floor} floor')
-        i=0
+        i = 0
         for row in self.floor_squares:
             time.sleep(0.1)
             print(f' {row[0]} ¦ {row[1]} ¦ {row[2]}')
-            if i<2:
+            if i < 2:
                 print('-----------') 
-            i+=1
+            i += 1
         return ""
 
 
@@ -48,7 +49,7 @@ def start_game():
     Writes the initial message of the site
     calculates the first move given by the computer using a random generator
     """
-    logo=tprint('3D TIC TAC')
+    tprint('3D TIC TAC')
     print('1 .- Instructions')
     print('2 .- Play')
     print('Please choose by entering the correct number')
@@ -56,67 +57,78 @@ def start_game():
         menu_choice = input('Enter either the number 1 or 2:\n')
         if validate_number(menu_choice, 2):
             break
-    if int(menu_choice)==1:
+    if int(menu_choice) == 1:
         instructions()
         play_game()
     else:
         play_game()
 
+
 def instructions():
-    print('This is a 3D tic tac toe game, it consist of three floors of the classic game')
-    print('You need to win conventianally 2 of the 3 floors or connecting the 3 floors with a vertival line, by choosing a move 1 floor at the time')
-    print('You will play against the machine')
-    print('The machine moves are marked as M, your moves are marked as Y. Machine moves first')
+    print('This 3D tic tac toe consist of three floors of the classic game')
+    print('Your oponent will be the computer/machine (M)')
+    print('You will be ask to provide three numbers between 1 and 3')
+    print('First number is for the floor')
+    print('Second and third correspond to the coordenates within floor')
+    print('Your (Y) selection will be marked with a Y')
+    print('Computer/machine moves first, marking the selection as M')
+    print('To win the game you need either of the following')
+    print('- Win one floor as in a conventional tic tac toe or,')
+    print('Connect the three floors with a column (vertical line)')
     input('Press enter to start the game\n')
+
 
 def play_game():
     random_machine_move()
     while True:
         get_user_move()
-        column_count=sumarize_columns('Y')
+        column_count = sumarize_columns('Y')
         if 3 in column_count:
             print('You win by completing a column')
             return
         for floor in floors:
-            floor_count=summarize_floor(floor.floor_squares,'Y')
+            floor_count = summarize_floor(floor.floor_squares, 'Y')
             if 3 in floor_count:
                 print('You win by by completing a winning a floor')
                 return
         machine_intel_move()
-        column_count=sumarize_columns('M')
+        column_count = sumarize_columns('M')
         if 3 in column_count:
             print('You lose')
             return
         for floor in floors:
-            floor_count=summarize_floor(floor.floor_squares,'M')
+            floor_count = summarize_floor(floor.floor_squares, 'M')
             if 3 in floor_count:
                 print('You lose')
                 return
-        empties=0
+        empties = 0
         for floor in floors:
-            empties+=floor.count_empties()
-        if empties==0:
+            empties += floor.count_empties()
+        if empties == 0:
             print('no spaces left')
             return
+
 
 def random_machine_move():
     """
     creates a random move from the machine
     """
-    floor_random=np.random.randint(3,size=3)
-    update_floor(floor_random,'M')
+    floor_random = np.random.randint(3, size=3)
+    update_floor(floor_random, 'M')
 
-def update_floor(data,mover):
+
+def update_floor(data, mover):
     """
     update floor with either machine or user move
     variable data is a list of numbers for [floor,vertical,horizontal]
     mover variable takes either M  or Y
     finally prints the layout
     """
-    floors[data[0]].assign_value(data[1],data[2],mover)
-    if mover=='M':
+    floors[data[0]].assign_value(data[1], data[2], mover)
+    if mover == 'M':
         for floor in floors:
             print(floor.print_floor())
+
 
 def get_user_move():
     """
@@ -128,7 +140,7 @@ def get_user_move():
     """
     while True:
         print('Please chose your move, providing 3 numbers from 1 to 3')
-        user_move=[]
+        user_move = []
         while True:
             move = input('Enter floor number, 1 for Bottom, 2'
                          + 'for mid or 3 for top:\n')
@@ -149,21 +161,23 @@ def get_user_move():
             break
         else:
             print('Space is not free, please choose a free point')
-    update_floor(user_move,'Y')
+    update_floor(user_move, 'Y')
 
-def validate_number(num,max_num):
+
+def validate_number(num, max_num):
     """
     Checks that entry is a number between 1 and 3
     raises a ValueError if entry is not a number or number outside scope
     """
     try:
         int(num)
-        if int(num)<1 or int(num)>max_num:
-            raise ValueError('Value must be a number between 1 and {max_num}')
+        if int(num) < 1 or int(num) > max_num:
+            raise ValueError(f'Value must be a number between 1 and {max_num}')
     except ValueError as e:
         print(f'Invalid position:{e}')
         return False
     return True
+
 
 def empty_point(data):
     """
@@ -175,143 +189,153 @@ def empty_point(data):
     else:
         return False
 
+
 def machine_intel_move():
     """
-    Decides the next move from the machine by analising the floors 
+    Decides the next move from the machine by analising the floors
+    Movement priority is as follows
+      1. Looks for potential winning lines, if none
+      2. Looks for potential losing lines, if none
+      3. Makes a move based on a Bayes like algorithm
+    Calls the update function with the selected move
     """
-    win_move=find_critical_by_floor('M')  #winning move by floor
+    win_move = find_critical_by_floor('M')  # winning move by floor
     if win_move:
-        update_floor(win_move,'M')
+        update_floor(win_move, 'M')
         return
-    block_move=find_critical_by_floor('Y')  #blocking move by floor
+    block_move = find_critical_by_floor('Y')  # blocking move by floor
     if block_move:
-        update_floor(block_move,'M')
+        update_floor(block_move, 'M')
         return
-    win_move=find_critical_column('M')  #winning move by column
+    win_move = find_critical_column('M')  # winning move by column
     if win_move:
-        update_floor(win_move,'M')
+        update_floor(win_move, 'M')
         return
-    block_move=find_critical_column('Y') #blocking move by column
+    block_move = find_critical_column('Y')  # blocking move by column
     if block_move:
-        update_floor(block_move,'M')
+        update_floor(block_move, 'M')
         return
-    move=machine_kernel_move()
+    move = machine_kernel_move()
     update_floor(move, 'M')
+
 
 def find_critical_by_floor(mover):
     """
     Find rows and lines with two spaces marked by the same user
     """ 
-    if mover=='M':
-        contender='Y'
+    if mover == 'M':
+        contender = 'Y'
     else:
-        contender='M'
-    floor_num=0
+        contender = 'M'
+    floor_num = 0
     for floor in floors:
-        lines_sum=summarize_floor(floor.floor_squares,mover)
-        ver_sum=lines_sum[:3]
-        hor_sum=lines_sum[3:6]
-        trace=lines_sum[6]
-        antitrace=lines_sum[7]
-        lines_sum_contender=summarize_floor(floor.floor_squares,contender)
-        ver_sum_contender=lines_sum_contender[:3] #sum of columns
-        hor_sum_contender=lines_sum_contender[3:6]  #sum of rows
-        trace_contender=lines_sum_contender[6]
-        antitrace_contender=lines_sum_contender[7]
+        lines_sum = summarize_floor(floor.floor_squares, mover)
+        ver_sum = lines_sum[:3]
+        hor_sum = lines_sum[3:6]
+        trace = lines_sum[6]
+        antitrace = lines_sum[7]
+        lines_sum_contender = summarize_floor(floor.floor_squares, contender)
+        ver_sum_contender = lines_sum_contender[:3]   # sum of columns
+        hor_sum_contender = lines_sum_contender[3:6]  # sum of rows
+        trace_contender = lines_sum_contender[6]
+        antitrace_contender = lines_sum_contender[7]
         if 2 in ver_sum:
-            index_mover=np.where(ver_sum==2)[0]
+            index_mover = np.where(ver_sum == 2)[0]
             for index_2 in index_mover:
-                if ver_sum_contender[index_2]==0:
+                if ver_sum_contender[index_2] == 0:
                     for i in range(3):
-                        if floor.floor_squares[i][index_2]==" ":
-                            next_move=[floor_num,i,index_2]
+                        if floor.floor_squares[i][index_2] == " ":
+                            next_move = [floor_num, i, index_2]
                             break
                     return next_move
         if 2 in hor_sum:
-            index_mover=np.where(hor_sum==2)[0]
+            index_mover = np.where(hor_sum == 2)[0]
             for index_1 in index_mover:
-                if hor_sum_contender[index_1]==0:
+                if hor_sum_contender[index_1] == 0:
                     for i in range(3):
-                        if floor.floor_squares[index_1][i]==" ":
-                            next_move=[floor_num, index_1, i]
+                        if floor.floor_squares[index_1][i] == " ":
+                            next_move = [floor_num, index_1, i]
                             break
                     return next_move
-        if trace==2:
-            if trace_contender==0:
+        if trace == 2:
+            if trace_contender == 0:
                 for i in range(3):
-                    if floor.floor_squares[i][i]==" ":
-                        next_move=[floor_num,i,i]
+                    if floor.floor_squares[i][i] == " ":
+                        next_move = [floor_num, i, i]
                         break
                 return next_move
-        if antitrace==2:
-            if antitrace_contender==0:
+        if antitrace == 2:
+            if antitrace_contender == 0:
                 for i in range(3):
-                    if floor.floor_squares[i][2-i]==" ":
-                        next_move=[floor_num,i,2-i]
+                    if floor.floor_squares[i][2-i] == " ":
+                        next_move = [floor_num, i, 2-i]
                         break
                 return next_move
-        floor_num+=1
+        floor_num += 1
 
     return False
+
 
 def find_critical_column(mover):
     """
     Find columns with potential win for mover
-    """ 
-    if mover=='M':
-        contender='Y'
+    """
+    if mover == 'M':
+        contender = 'Y'
     else:
-        contender='M'
-    column_sum=sumarize_columns(mover)
-    column_sum_contender=sumarize_columns(contender)
+        contender = 'M'
+    column_sum = sumarize_columns(mover)
+    column_sum_contender = sumarize_columns(contender)
     for i in range(3):
         for j in range(3):
-            if column_sum[i,j]==2 and column_sum_contender[i,j]==0:
-                floor_num=0
+            if column_sum[i,j] == 2 and column_sum_contender[i,j] == 0:
+                floor_num = 0
                 for floor in floors:
-                    if floor.floor_squares[i][j]==" ":
-                        next_move=[floor_num,i,j]
+                    if floor.floor_squares[i][j] == " ":
+                        next_move = [floor_num,i, j]
                         break
-                    floor_num+=1
+                    floor_num += 1
                 return next_move
     return False
 
-def summarize_floor(data,user):
+
+def summarize_floor(data, user):
     """
     converts data variable containing a floor into a numpy matrix
     data takes a floor class and user takes either 'M' or 'Y'
     """
-    floor_matrix=np.zeros((3,3),dtype=int)
-    floor_matrix_mirror=np.zeros((3,3),dtype=int)
+    floor_matrix = np.zeros((3, 3), dtype=int)
+    floor_matrix_mirror = np.zeros((3, 3), dtype=int)
     for i in range(3):
         for j in range(3):
             if data[i][j] == user:
-                floor_matrix[i,j]=1
-                floor_matrix_mirror[i,2-j]=1
-    sum_row=np.append(np.sum(floor_matrix,axis=0),np.sum(floor_matrix,axis=1))
-    sum_row=np.append(sum_row,np.trace(floor_matrix))
-    sum_row=np.append(sum_row,np.trace(floor_matrix_mirror))
+                floor_matrix[i,j] = 1
+                floor_matrix_mirror[i,2-j] = 1
+    sum_row = np.append(np.sum(floor_matrix, axis=0), np.sum(floor_matrix, axis=1))
+    sum_row = np.append(sum_row, np.trace(floor_matrix))
+    sum_row = np.append(sum_row, np.trace(floor_matrix_mirror))
     return sum_row
 
 def sumarize_columns(user):
     """
     sums columns and return values for the user
     """
-    column_sum=np.zeros((3,3),dtype=int)
+    column_sum = np.zeros((3, 3), dtype=int)
     for i in range(3):
         for j in range(3):
-            addition=0
+            addition = 0
             for floor in floors:
-                if floor.floor_squares[i][j]==user:
-                    addition+=1
-            column_sum[i,j]=addition
+                if floor.floor_squares[i][j] == user:
+                    addition += 1
+            column_sum[i, j] = addition
     return column_sum
+
 
 def machine_kernel_move():
     """
     uses kernels to calculate the probability matrices
     """
-    max_val=[]
+    max_val = []
     max_val_coor=[]
     for floor in floors:
         machine_multiplier=np.zeros((3,3),dtype=int)
