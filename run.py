@@ -3,6 +3,7 @@
 # Write your code to expect a terminal of 80 characters wide and 24 rows high
 import numpy as np
 from art import *
+import time
 
 class GameFloor:
     """
@@ -34,6 +35,7 @@ class GameFloor:
         print(f'{self.floor} floor')
         i=0
         for row in self.floor_squares:
+            time.sleep(0.1)
             print(f' {row[0]} ¦ {row[1]} ¦ {row[2]}')
             if i<2:
                 print('-----------') 
