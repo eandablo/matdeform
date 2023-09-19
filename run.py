@@ -2,6 +2,7 @@
 # You can delete these comments, but do not change the name of this file
 # Write your code to expect a terminal of 80 characters wide and 24 rows high
 import numpy as np
+from art import *
 
 class GameFloor:
     """
@@ -21,6 +22,14 @@ class GameFloor:
     def assign_value(self,x,y,user):
         self.floor_squares[x][y] = user
 
+    def count_empties(self):
+        count=0
+        for row in self.floor_squares:
+            for space in row:
+                if space==' ':
+                    count+=1
+        return count
+
     def print_floor(self):
         print(f'{self.floor} floor')
         i=0
@@ -37,12 +46,56 @@ def start_game():
     Writes the initial message of the site
     calculates the first move given by the computer using a random generator
     """
+    logo=tprint('3D TIC TAC')
+    print('1 .- Instructions')
+    print('2 .- Play')
+    print('Please choose by entering the correct number')
+    while True:
+        menu_choice = input('Enter either the number 1 or 2:\n')
+        if validate_number(menu_choice, 2):
+            break
+    if int(menu_choice)==1:
+        instructions()
+        play_game()
+    else:
+        play_game()
+
+def instructions():
     print('This is a 3D tic tac toe game, it consist of three floors of the classic game')
     print('You need to win conventianally 2 of the 3 floors or connecting the 3 floors with a vertival line, by choosing a move 1 floor at the time')
     print('You will play against the machine')
     print('The machine moves are marked as M, your moves are marked as Y. Machine moves first')
-    input('Press enter to start')
+    input('Press enter to start the game\n')
+
+def play_game():
     random_machine_move()
+    while True:
+        get_user_move()
+        column_count=sumarize_columns('Y')
+        if 3 in column_count:
+            print('You win by completing a column')
+            return
+        for floor in floors:
+            floor_count=summarize_floor(floor.floor_squares,'Y')
+            if 3 in floor_count:
+                print('You win by by completing a winning a floor')
+                return
+        machine_intel_move()
+        column_count=sumarize_columns('M')
+        if 3 in column_count:
+            print('You lose')
+            return
+        for floor in floors:
+            floor_count=summarize_floor(floor.floor_squares,'M')
+            if 3 in floor_count:
+                print('You lose')
+                return
+        empties=0
+        for floor in floors:
+            empties+=floor.count_empties()
+        if empties==0:
+            print('no spaces left')
+            return
 
 def random_machine_move():
     """
@@ -75,18 +128,19 @@ def get_user_move():
         print('Please chose your move, providing 3 numbers from 1 to 3')
         user_move=[]
         while True:
-            move = input('Enter floor number, 1 for Bottom, 2 for mid or 3 for top:\n')
-            if validate_number(move):
+            move = input('Enter floor number, 1 for Bottom, 2'
+                         + 'for mid or 3 for top:\n')
+            if validate_number(move, 3):
                 break
         user_move.append(int(move)-1)
         while True:
             move = input('Enter the vertical position:\n')
-            if validate_number(move):
+            if validate_number(move, 3):
                 break
         user_move.append(int(move)-1)
         while True:
             move = input('Enter the horizontal position:\n')
-            if validate_number(move):
+            if validate_number(move, 3):
                 break
         user_move.append(int(move)-1)
         if empty_point(user_move):
@@ -95,15 +149,15 @@ def get_user_move():
             print('Space is not free, please choose a free point')
     update_floor(user_move,'Y')
 
-def validate_number(num):
+def validate_number(num,max_num):
     """
     Checks that entry is a number between 1 and 3
     raises a ValueError if entry is not a number or number outside scope
     """
     try:
         int(num)
-        if int(num)<1 or int(num)>3:
-            raise ValueError('Value must be a number between 1 and 3')
+        if int(num)<1 or int(num)>max_num:
+            raise ValueError('Value must be a number between 1 and {max_num}')
     except ValueError as e:
         print(f'Invalid position:{e}')
         return False
@@ -140,7 +194,7 @@ def machine_intel_move():
         update_floor(block_move,'M')
         return
     move=machine_kernel_move()
-    update_floor(move,'M')
+    update_floor(move, 'M')
 
 def find_critical_by_floor(mover):
     """
@@ -177,7 +231,7 @@ def find_critical_by_floor(mover):
                 if hor_sum_contender[index_1]==0:
                     for i in range(3):
                         if floor.floor_squares[index_1][i]==" ":
-                            next_move=[floor_num,index_1,i]
+                            next_move=[floor_num, index_1, i]
                             break
                     return next_move
         if trace==2:
@@ -299,27 +353,5 @@ user_kernel=np.random.rand(3,3)
 
 def main():
     start_game()
-    while True:
-        get_user_move()
-        column_count=sumarize_columns('Y')
-        if 3 in column_count:
-            print('You win by completing a column')
-            return
-        for floor in floors:
-            floor_count=summarize_floor(floor.floor_squares,'Y')
-            if 3 in floor_count:
-                print('You win by by completing a winning a floor')
-                return
-        machine_intel_move()
-        column_count=sumarize_columns('M')
-        if 3 in column_count:
-            print('You lose')
-            return
-        for floor in floors:
-            floor_count=summarize_floor(floor.floor_squares,'M')
-            if 3 in floor_count:
-                print('You lose')
-                return
-    
 
 main()
