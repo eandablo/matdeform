@@ -65,20 +65,36 @@ def start_game():
 
 
 def instructions():
-    print('This 3D tic tac toe consist of three floors of the classic game')
-    print('Your oponent will be the computer/machine (M)')
-    print('You will be ask to provide three numbers between 1 and 3')
-    print('First number is for the floor')
-    print('Second and third correspond to the coordenates within floor')
-    print('Your (Y) selection will be marked with a Y')
-    print('Computer/machine moves first, marking the selection as M')
-    print('To win the game you need either of the following')
-    print('- Win one floor as in a conventional tic tac toe or,')
-    print('Connect the three floors with a column (vertical line)')
-    input('Press enter to start the game\n')
+    """
+    prints instructions read from file instructions.txt
+    """
+    f = open('instructions.txt')
+    lines = f.readlines()
+    art.tprint('HOW TO\n')
+    art.tprint('PLAY\n')
+    for line in lines:
+        time.sleep(0.3)
+        print(line)
+    input('Press enter to see example\n')
+    example()
+    input('Press enter to start playing\n')
+
+
+def example():
+    """
+    writes an example to show the user
+    how to make a move
+    """
+    print('Example below shows a move with')
+    print('floor = 3, vertical = 1, horizontal = 2\n')
+    floor_example = GameFloor('Top')
+    floor_example.floor_squares[0][1] = 'M'
+    floor_example.print_floor()
+    print('Enjoy playing')
 
 
 def play_game():
+    print('First move is by the computer')
     random_machine_move()
     while True:
         get_user_move()
@@ -163,10 +179,15 @@ def validate_number(num, max_num):
     """
     try:
         int(num)
+    except ValueError:
+        print(f'Invalid entry: entry must be an integer')
+        return False
+    try:
+        int(num)
         if int(num) < 1 or int(num) > max_num:
-            raise ValueError(f'Value must be a number between 1 and {max_num}')
-    except ValueError as e:
-        print(f'Invalid position:{e}')
+            raise ValueError
+    except ValueError:
+        print(f'Invalid position: number must be between 1 and {max_num}')
         return False
     return True
 
