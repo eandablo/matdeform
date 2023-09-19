@@ -82,31 +82,23 @@ def play_game():
     random_machine_move()
     while True:
         get_user_move()
-        column_count = sumarize_columns('Y')
-        if 3 in column_count:
-            print('You win by completing a column')
-            return
-        for floor in floors:
-            floor_count = summarize_floor(floor.floor_squares, 'Y')
-            if 3 in floor_count:
-                print('You win by by completing a winning a floor')
-                return
+        win_flag = check_win('Y')
+        if win_flag:
+            art.tprint('CONGRATS')
+            art.tprint('You Win')
+            break
         machine_intel_move()
-        column_count = sumarize_columns('M')
-        if 3 in column_count:
-            print('You lose')
-            return
-        for floor in floors:
-            floor_count = summarize_floor(floor.floor_squares, 'M')
-            if 3 in floor_count:
-                print('You lose')
-                return
-        empties = 0
-        for floor in floors:
-            empties += floor.count_empties()
-        if empties == 0:
-            print('no spaces left')
-            return
+        win_flag = check_win('M')
+        if win_flag:
+            art.tprint('YOU LOSE')
+            art.tprint('BETTER')
+            art.tprint('LUCK')
+            art.tprint('NEXT TIME')
+            break
+        full_flag = check_empty_spaces()
+        if full_flag:
+            art.tprint('THIS IS A TIE')
+            break
 
 
 def random_machine_move():
@@ -378,6 +370,31 @@ floors = [GameFloor('Bottom'), GameFloor('Mid'), GameFloor('Top')]
 # define kernels as random matrix for both machine and user
 machine_kernel = np.random.rand(3, 3)
 user_kernel = np.random.rand(3, 3)
+
+
+def check_win(mover):
+    """
+    Revises floors to find if either machine or user
+    has a winning combination
+    """
+    column_count = sumarize_columns(mover)
+    if 3 in column_count:
+        return True
+    for floor in floors:
+        floor_count = summarize_floor(floor.floor_squares, mover)
+        if 3 in floor_count:
+            return True
+    return False
+
+
+def check_empty_spaces():
+    empties = 0
+    for floor in floors:
+        empties += floor.count_empties()
+    if empties == 0:
+        print('no spaces left')
+        return True
+    return False
 
 
 def main():
