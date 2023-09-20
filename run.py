@@ -423,22 +423,7 @@ def machine_kernel_move():
     max_val = []
     max_val_coor = []
     for floor in floors:
-        machine_multiplier = np.zeros((3, 3), dtype=int)
-        user_multiplier = np.zeros((3, 3), dtype=int)
-        for i in range(3):
-            for j in range(3):
-                if floor.floor_squares[i][j] == 'M':
-                    machine_multiplier[i, j] = 1
-                if floor.floor_squares[i][j] == 'Y':
-                    user_multiplier[i, j] = 1
-        prob_matrix = np.add(np.matmul(machine_multiplier, machine_kernel),
-                             np.matmul(user_multiplier, user_kernel))
-        prob_matrix = np.add(prob_matrix, np.random.rand(3, 3))
-        merge_matrix = np.add(machine_multiplier, user_multiplier)
-        for i in range(3):
-            for j in range(3):
-                if merge_matrix[i, j] == 1:
-                    prob_matrix[i, j] = 0
+        prob_matrix = calculate_prob_matrix(floor)
         max_val.append(prob_matrix.max())
         v_max = np.argmax(prob_matrix)//3
         h_max = np.argmax(prob_matrix)-v_max*3
@@ -452,6 +437,29 @@ def machine_kernel_move():
             max_global_coor = max_val_coor[i]
             max_floor = i
     return [max_floor, max_global_coor[0], max_global_coor[1]]
+
+
+def calculate_prob_matrix(floor):
+    """
+    calculates and returns probability matrix for kernel based move
+    """
+    machine_multiplier = np.zeros((3, 3), dtype=int)
+    user_multiplier = np.zeros((3, 3), dtype=int)
+    for i in range(3):
+        for j in range(3):
+            if floor.floor_squares[i][j] == 'M':
+                machine_multiplier[i, j] = 1
+            if floor.floor_squares[i][j] == 'Y':
+                user_multiplier[i, j] = 1
+    p_matrix = np.add(np.matmul(machine_multiplier, machine_kernel),
+                      np.matmul(user_multiplier, user_kernel))
+    p_matrix = np.add(p_matrix, np.random.rand(3, 3))
+    merge_matrix = np.add(machine_multiplier, user_multiplier)
+    for i in range(3):
+        for j in range(3):
+            if merge_matrix[i, j] == 1:
+                p_matrix[i, j] = 0
+    return p_matrix
 
 
 # variable floors is a structure containing all three separated floors
@@ -479,6 +487,10 @@ def check_win(mover):
 
 
 def check_empty_spaces():
+    """
+    Calculates empty spaces and sends flag to stop
+    the game if no empty spaces left
+    """
     empties = 0
     for floor in floors:
         empties += floor.count_empties()
