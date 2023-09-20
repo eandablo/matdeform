@@ -13,6 +13,7 @@ class GameFloor:
     the first one updates the floor with the computer and user choices
     the second prints the floor
     """
+
     def __init__(self, floor):
         self.floor_squares = [
             [' ', ' ', ' '],
@@ -150,7 +151,7 @@ def get_user_move():
         print('Please chose your move, providing 3 numbers from 1 to 3')
         user_move = []
         while True:
-            move = input('Enter floor number, 1 for Bottom, 2'
+            move = input('Enter floor number, 1 for Bottom, 2 '
                          + 'for mid or 3 for top:\n')
             if validate_number(move, 3):
                 break
@@ -234,7 +235,9 @@ def machine_intel_move():
 
 def find_critical_by_floor(mover):
     """
-    Find rows and lines with two spaces marked by the same user
+    Find rows and lines with two spaces marked by contender
+    finds if this row already contains a space filled by the mover
+    if not, suggests a move to this empty space.
     """
     if mover == 'M':
         contender = 'Y'
@@ -255,37 +258,73 @@ def find_critical_by_floor(mover):
         if 2 in ver_sum:
             index_mover = np.where(ver_sum == 2)[0]
             for index_2 in index_mover:
-                if ver_sum_contender[index_2] == 0:
-                    for i in range(3):
-                        if floor.floor_squares[i][index_2] == " ":
-                            next_move = [floor_num, i, index_2]
-                            break
-                    return next_move
+                m_move = find_empty_space_vertical(index_2,
+                                                   ver_sum_contender, floor, floor_num)
+            if m_move:
+                return m_move
         if 2 in hor_sum:
             index_mover = np.where(hor_sum == 2)[0]
             for index_1 in index_mover:
-                if hor_sum_contender[index_1] == 0:
-                    for i in range(3):
-                        if floor.floor_squares[index_1][i] == " ":
-                            next_move = [floor_num, index_1, i]
-                            break
-                    return next_move
+                m_move = find_empty_space_row(index_1, hor_sum_contender,
+                                              floor, floor_num)
+            if m_move:
+                return m_move
         if trace == 2:
-            if trace_contender == 0:
-                for i in range(3):
-                    if floor.floor_squares[i][i] == " ":
-                        next_move = [floor_num, i, i]
-                        break
-                return next_move
+            m_move = find_empty_space_trace(trace_contender, floor,
+                                            floor_num, 't')
+            if m_move:
+                return m_move
         if antitrace == 2:
-            if antitrace_contender == 0:
-                for i in range(3):
-                    if floor.floor_squares[i][2-i] == " ":
-                        next_move = [floor_num, i, 2-i]
-                        break
-                return next_move
+            m_move = find_empty_space_trace(antitrace_contender, floor,
+                                            floor_num, 'a')
+            if m_move:
+                return m_move
         floor_num += 1
+    return False
 
+
+def find_empty_space_vertical(index, data, floor, num):
+    """
+    explore the vertical lines in floor to find the empty space
+    """
+    if data[index] == 0:
+        for i in range(3):
+            if floor.floor_squares[i][index] == " ":
+                next_move = [num, i, index]
+                break
+        return next_move
+    return False
+
+
+def find_empty_space_row(index, data, floor, num):
+    """
+    explore the rows in floor to find the empty space
+    """
+    if data[index] == 0:
+        for i in range(3):
+            if floor.floor_squares[index][i] == " ":
+                next_move = [num, index, i]
+                break
+        return next_move
+    return False
+
+
+def find_empty_space_trace(data, floor, num, flag):
+    """
+    explore the trace in floor to find the empty space
+    """
+    if flag == 't':
+        sign = 1
+        offset = 0
+    else:
+        sign = -1
+        offset = 2
+    if data == 0:
+        for i in range(3):
+            if floor.floor_squares[i][i*sign + offset] == " ":
+                next_move = [num, i, i*sign + offset]
+                break
+        return next_move
     return False
 
 
@@ -301,14 +340,30 @@ def find_critical_column(mover):
     column_sum_contender = sumarize_columns(contender)
     for i in range(3):
         for j in range(3):
-            if column_sum[i, j] == 2 and column_sum_contender[i, j] == 0:
-                floor_num = 0
-                for floor in floors:
-                    if floor.floor_squares[i][j] == " ":
-                        next_move = [floor_num, i, j]
-                        break
-                    floor_num += 1
-                return next_move
+            m_move = find_empty_space_column(column_sum, column_sum_contender,
+                                             i, j)
+#            if column_sum[i, j] == 2 and column_sum_contender[i, j] == 0:
+#                floor_num = 0
+#                for floor in floors:
+#                    if floor.floor_squares[i][j] == " ":
+#                        next_move = [floor_num, i, j]
+#                        break
+#                    floor_num += 1
+#                return next_move
+            if m_move:
+                return m_move
+    return False
+
+
+def find_empty_space_column(data, data_contender, i, j):
+    if data[i, j] == 2 and data_contender[i, j] == 0:
+        floor_num = 0
+        for floor in floors:
+            if floor.floor_squares[i][j] == " ":
+                next_move = [floor_num, i, j]
+                break
+            floor_num += 1
+        return next_move
     return False
 
 
