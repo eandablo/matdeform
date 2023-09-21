@@ -497,6 +497,11 @@ def calculate_prob_matrix(floor):
         for j in range(3):
             if merge_matrix[i, j] == 1:
                 p_matrix[i, j] = 0
+    count_1 = summarize_floor(floor.floor_squares, 'M')
+    count_2 = summarize_floor(floor.floor_squares, 'Y')
+    not_available = 3 in count_1 or 3 in count_2
+    if not_available:
+        p_matrix[:,:] = 0
     return p_matrix
 
 
