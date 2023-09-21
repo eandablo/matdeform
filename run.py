@@ -13,7 +13,6 @@ class GameFloor:
     the first one updates the floor with the computer and user choices
     the second prints the floor
     """
-
     def __init__(self, floor):
         self.floor_squares = [
             [' ', ' ', ' '],
@@ -108,9 +107,7 @@ def play_game():
         win_flag = check_win('M')
         if win_flag:
             art.tprint('YOU LOSE')
-            art.tprint('BETTER')
-            art.tprint('LUCK')
-            art.tprint('NEXT TIME')
+            art.tprint('TRY AGAIN')
             break
         full_flag = check_empty_spaces()
         if full_flag:
@@ -209,6 +206,14 @@ def machine_intel_move():
     Decides the next move from the machine by analising the floors
     Calls the update function with the selected move
     """
+    win_move = find_critical_column('M')  # winning move by column
+    if win_move:
+        update_floor(win_move, 'M')
+        return
+    block_move = find_critical_column('Y')  # blocking move by column
+    if block_move:
+        update_floor(block_move, 'M')
+        return
     win_move = find_critical_row_floor('M', 'Y')  # winning move by floor
     if win_move:
         update_floor(win_move, 'M')
@@ -222,14 +227,6 @@ def machine_intel_move():
         update_floor(block_move, 'M')
         return
     block_move = find_critical_diagonal_floor('Y', 'M')
-    if block_move:
-        update_floor(block_move, 'M')
-        return
-    win_move = find_critical_column('M')  # winning move by column
-    if win_move:
-        update_floor(win_move, 'M')
-        return
-    block_move = find_critical_column('Y')  # blocking move by column
     if block_move:
         update_floor(block_move, 'M')
         return
@@ -251,14 +248,15 @@ def find_critical_row_floor(mover, contender):
         lines_sum_contender = summarize_floor(floor.floor_squares, contender)
         ver_sum_contender = lines_sum_contender[:3]   # sum of columns
         hor_sum_contender = lines_sum_contender[3:6]  # sum of rows
-        if 2 in ver_sum:
+        available = 3 not in lines_sum and 3 not in lines_sum_contender
+        if 2 in ver_sum and available:
             index_mover = np.where(ver_sum == 2)[0]
             for index in index_mover:
                 m_move = find_empty_space_vertical(index, ver_sum_contender,
                                                    floor, floor_num)
             if m_move:
                 return m_move
-        if 2 in hor_sum:
+        if 2 in hor_sum and available:
             index_mover = np.where(hor_sum == 2)[0]
             for index in index_mover:
                 m_move = find_empty_space_row(index, hor_sum_contender,
@@ -283,12 +281,13 @@ def find_critical_diagonal_floor(mover, contender):
         lines_sum_contender = summarize_floor(floor.floor_squares, contender)
         trace_contender = lines_sum_contender[6]
         antitrace_contender = lines_sum_contender[7]
-        if trace == 2:
+        available = 3 not in lines_sum and 3 not in lines_sum_contender
+        if trace == 2 and available:
             m_move = find_empty_space_trace(trace_contender, floor,
                                             floor_num, 't')
             if m_move:
                 return m_move
-        if antitrace == 2:
+        if antitrace == 2 and available:
             m_move = find_empty_space_trace(antitrace_contender, floor,
                                             floor_num, 'a')
             if m_move:
@@ -442,6 +441,7 @@ def machine_kernel_move():
 def calculate_prob_matrix(floor):
     """
     calculates and returns probability matrix for kernel based move
+    the p_matrix is calculating by multiplying floor matrix and kernels 
     """
     machine_multiplier = np.zeros((3, 3), dtype=int)
     user_multiplier = np.zeros((3, 3), dtype=int)
@@ -479,10 +479,13 @@ def check_win(mover):
     column_count = sumarize_columns(mover)
     if 3 in column_count:
         return True
+    floor_win = 0
     for floor in floors:
         floor_count = summarize_floor(floor.floor_squares, mover)
         if 3 in floor_count:
-            return True
+            floor_win += 1
+    if floor_win == 2:
+        return True
     return False
 
 
