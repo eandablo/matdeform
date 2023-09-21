@@ -106,6 +106,10 @@ def play_game():
             art.tprint('CONGRATS')
             art.tprint('You Win')
             break
+        full_flag = check_empty_spaces()
+        if full_flag:
+            art.tprint('THIS IS A TIE')
+            break
         machine_floor_move()
         win_flag = check_win('M')
         if win_flag:
@@ -365,6 +369,7 @@ def find_critical_column(mover):
                 return m_move
     return False
 
+
 def vertical_attack():
     potential_line = vertical_explore()
     if potential_line:
@@ -377,6 +382,7 @@ def vertical_attack():
         update_floor(move, 'M')
         return
 
+
 def vertical_explore():
     """
     searches for inter-floor vertical lines
@@ -388,8 +394,9 @@ def vertical_explore():
         for j in range(3):
             if column_sum[i, j] == 1 and column_sum_contender[i, j] == 0:
                 return [i, j]
-    return False            
-    
+    return False
+
+
 def empty_in_line(line):
     """
     finds the empty inter-floor space
@@ -479,7 +486,7 @@ def machine_kernel_move():
 def calculate_prob_matrix(floor):
     """
     calculates and returns probability matrix for kernel based move
-    the p_matrix is calculating by multiplying floor matrix and kernels 
+    the p_matrix is calculating by multiplying floor matrix and kernels
     """
     machine_multiplier = np.zeros((3, 3), dtype=int)
     user_multiplier = np.zeros((3, 3), dtype=int)
@@ -501,7 +508,7 @@ def calculate_prob_matrix(floor):
     count_2 = summarize_floor(floor.floor_squares, 'Y')
     not_available = 3 in count_1 or 3 in count_2
     if not_available:
-        p_matrix[:,:] = 0
+        p_matrix[:, :] = 0
     return p_matrix
 
 
@@ -539,8 +546,8 @@ def check_empty_spaces():
     """
     empties = 0
     for floor in floors:
-        count_1 = summarize_floor(floor.floor_squares,'M')
-        count_2 = summarize_floor(floor.floor_squares,'Y')
+        count_1 = summarize_floor(floor.floor_squares, 'M')
+        count_2 = summarize_floor(floor.floor_squares, 'Y')
         available = 3 not in count_1 and 3 not in count_2
         if available:
             empties += floor.count_empties()
