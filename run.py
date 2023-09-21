@@ -539,7 +539,11 @@ def check_empty_spaces():
     """
     empties = 0
     for floor in floors:
-        empties += floor.count_empties()
+        count_1 = summarize_floor(floor.floor_squares,'M')
+        count_2 = summarize_floor(floor.floor_squares,'Y')
+        available = 3 not in count_1 and 3 not in count_2
+        if available:
+            empties += floor.count_empties()
     if empties == 0:
         print('no spaces left')
         return True
