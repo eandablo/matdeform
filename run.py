@@ -85,11 +85,14 @@ def example():
     writes an example to show the user
     how to make a move
     """
-    print('Example below shows a move with')
-    print('floor = 3, vertical = 1, horizontal = 2\n')
-    floor_example = GameFloor('Top')
-    floor_example.floor_squares[0][1] = 'M'
-    floor_example.print_floor()
+    print('In the example, the machine won by 2nd option')
+    print('linking vertically all floors with positions')
+    print('in row = 1 and column = 2')
+    floor_names = ['Bottom', 'Mid', 'Top']
+    for name in floor_names:
+        floor_example = GameFloor(name)
+        floor_example.floor_squares[0][1] = 'M'
+        floor_example.print_floor()
     print('Enjoy playing')
 
 
@@ -154,12 +157,12 @@ def get_user_move():
                 break
         user_move.append(int(move)-1)
         while True:
-            move = input('Enter the vertical position:\n')
+            move = input('Enter the row position:\n')
             if validate_number(move, 3):
                 break
         user_move.append(int(move)-1)
         while True:
-            move = input('Enter the horizontal position:\n')
+            move = input('Enter the column position:\n')
             if validate_number(move, 3):
                 break
         user_move.append(int(move)-1)
