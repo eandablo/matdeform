@@ -106,7 +106,7 @@ def play_game():
             art.tprint('CONGRATS')
             art.tprint('You Win')
             break
-        machine_intel_move()
+        machine_floor_move()
         win_flag = check_win('M')
         if win_flag:
             art.tprint('YOU LOSE')
@@ -204,7 +204,7 @@ def empty_point(data):
         return False
 
 
-def machine_intel_move():
+def machine_floor_move():
     """
     Decides the next move from the machine by analising the floors
     Calls the update function with the selected move
@@ -217,7 +217,7 @@ def machine_intel_move():
     if block_move:
         update_floor(block_move, 'M')
         return
-    win_move = find_critical_row_floor('M', 'Y')  # winning move by floor
+    win_move = find_critical_row_floor('M', 'Y')
     if win_move:
         update_floor(win_move, 'M')
         return
@@ -225,7 +225,7 @@ def machine_intel_move():
     if win_move:
         update_floor(win_move, 'M')
         return
-    block_move = find_critical_row_floor('Y', 'M')  # blocking move by floor
+    block_move = find_critical_row_floor('Y', 'M')
     if block_move:
         update_floor(block_move, 'M')
         return
@@ -233,8 +233,7 @@ def machine_intel_move():
     if block_move:
         update_floor(block_move, 'M')
         return
-    move = machine_kernel_move()
-    update_floor(move, 'M')
+    vertical_attack()
 
 
 def find_critical_row_floor(mover, contender):
@@ -365,6 +364,42 @@ def find_critical_column(mover):
             if m_move:
                 return m_move
     return False
+
+def vertical_attack():
+    potential_line = vertical_explore()
+    if potential_line:
+        floor_num = empty_in_line(potential_line)
+        move = [floor_num, potential_line[0], potential_line[1]]
+        update_floor(move, 'M')
+        return
+    else:
+        move = machine_kernel_move()
+        update_floor(move, 'M')
+        return
+
+def vertical_explore():
+    """
+    searches for inter-floor vertical lines
+    with only on machine move and no contender positions
+    """
+    column_sum = sumarize_columns('M')
+    column_sum_contender = sumarize_columns('Y')
+    for i in range(3):
+        for j in range(3):
+            if column_sum[i, j] == 1 and column_sum_contender[i, j] == 0:
+                return [i, j]
+    return False            
+    
+def empty_in_line(line):
+    """
+    finds the empty inter-floor space
+    when the line joining them is a potential win
+    """
+    floor_num = 0
+    for floor in floors:
+        if floor.floor_squares[line[0]][line[1]] == ' ':
+            return floor_num
+        floor_num += 1
 
 
 def find_empty_space_column(data, data_contender, i, j):
