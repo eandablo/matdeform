@@ -1,1 +1,2 @@
-# Your requirements go here
+art==6.0
+numpy==1.24.4
