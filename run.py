@@ -1,6 +1,3 @@
-# Your code goes here.
-# You can delete these comments, but do not change the name of this file
-# Write your code to expect a terminal of 80 characters wide and 24 rows high
 import numpy as np
 import art
 import time
@@ -47,7 +44,8 @@ class GameFloor:
 def start_game():
     """
     Writes the initial message of the site
-    calculates the first move given by the computer using a random generator
+    displays either instructions of start the game
+    depending on user choice
     """
     art.tprint('3D TIC TAC')
     print('1 .- Instructions')
@@ -67,6 +65,8 @@ def start_game():
 def instructions():
     """
     prints instructions read from file instructions.txt
+    provides an example by calling the function example
+    after this, lets the game to start
     """
     f = open('instructions.txt')
     lines = f.readlines()
@@ -83,7 +83,7 @@ def instructions():
 def example():
     """
     writes an example to show the user
-    how to make a move
+    how to make a move and win
     """
     print('In the example, the machine won by 2nd option')
     print('linking vertically all floors with positions')
@@ -97,6 +97,11 @@ def example():
 
 
 def play_game():
+    """
+    starts the game with a random move by the computer
+    collects the user move and checks for win or tie
+    computer moves and checks for win or tie
+    """
     print('First move is by the computer')
     random_machine_move()
     while True:
@@ -125,6 +130,7 @@ def play_game():
 def random_machine_move():
     """
     creates a random move from the machine
+    updates the corresponding floor
     """
     floor_random = np.random.randint(3, size=3)
     update_floor(floor_random, 'X')
@@ -133,8 +139,8 @@ def random_machine_move():
 def update_floor(data, mover):
     """
     update floor with either machine or user move
-    variable data is a list of numbers for [floor,vertical,horizontal]
-    mover variable takes either M  or Y
+    variable data is a list of numbers for [floor,row,column]
+    mover variable takes a string value, either 'X' or 'O'
     finally prints the layout
     """
     floors[data[0]].assign_value(data[1], data[2], mover)
@@ -179,7 +185,7 @@ def get_user_move():
 
 def validate_number(num, max_num):
     """
-    Checks that entry is a number between 1 and 3
+    Checks that entry is a number between 1 and max_number
     raises a ValueError if entry is not a number or number outside scope
     """
     try:
@@ -200,7 +206,7 @@ def validate_number(num, max_num):
 def empty_point(data):
     """
     validates if user entry is already busy
-    data is a list of numbers for [floor,vertical,horizontal]
+    data is a list of numbers for [floor,row,column]
     """
     if floors[data[0]].floor_squares[data[1]][data[2]] == ' ':
         return True
@@ -371,6 +377,11 @@ def find_critical_column(mover):
 
 
 def vertical_attack():
+    """
+    Computer finds interfloor vertical position to create winning
+    alternatives, finding lines with no user positions and one
+    computer position using vertical_explore function
+    """
     potential_line = vertical_explore()
     if potential_line:
         floor_num = empty_in_line(potential_line)
@@ -386,7 +397,7 @@ def vertical_attack():
 def vertical_explore():
     """
     searches for inter-floor vertical lines
-    with only on machine move and no contender positions
+    with only on computer position and no contender positions
     """
     column_sum = sumarize_columns('X')
     column_sum_contender = sumarize_columns('O')
