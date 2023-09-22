@@ -1,6 +1,6 @@
 import numpy as np
-import art
-import time
+from art import tprint
+from time import sleep
 
 
 class GameFloor:
@@ -33,7 +33,7 @@ class GameFloor:
         print(f'{self.floor} floor')
         i = 0
         for row in self.floor_squares:
-            time.sleep(0.1)
+            sleep(0.1)
             print(f' {row[0]} ¦ {row[1]} ¦ {row[2]}')
             if i < 2:
                 print('-----------')
@@ -47,7 +47,7 @@ def start_game():
     displays either instructions of start the game
     depending on user choice
     """
-    art.tprint('3D TIC TAC')
+    tprint('3D TIC TAC')
     print('1 .- Instructions')
     print('2 .- Play')
     print('Please choose by entering the correct number')
@@ -70,10 +70,10 @@ def instructions():
     """
     f = open('instructions.txt')
     lines = f.readlines()
-    art.tprint('HOW TO\n')
-    art.tprint('PLAY\n')
+    tprint('HOW TO\n')
+    tprint('PLAY\n')
     for line in lines:
-        time.sleep(0.3)
+        sleep(0.3)
         print(line)
     input('Press enter to see example\n')
     example()
@@ -108,22 +108,22 @@ def play_game():
         get_user_move()
         win_flag = check_win('O')
         if win_flag:
-            art.tprint('CONGRATS')
-            art.tprint('You Win')
+            tprint('CONGRATS')
+            tprint('You Win')
             break
         full_flag = check_empty_spaces()
         if full_flag:
-            art.tprint('THIS IS A TIE')
+            tprint('THIS IS A TIE')
             break
         machine_floor_move()
         win_flag = check_win('X')
         if win_flag:
-            art.tprint('YOU LOSE')
-            art.tprint('TRY AGAIN')
+            tprint('YOU LOSE')
+            tprint('TRY AGAIN')
             break
         full_flag = check_empty_spaces()
         if full_flag:
-            art.tprint('THIS IS A TIE')
+            tprint('THIS IS A TIE')
             break
 
 
