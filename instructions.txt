@@ -1,11 +1,11 @@
 This 3D tic tac toe consist of three floors of the classic game.
-Your oponent will be the computer/machine (M).
-You will be asked to provide three numbers between 1 and 3.
-First number selects the floor: 1 (Bottom), 2 (mid), 3 (Top).
+Your oponent will be the computer.
+To make your move, you will be asked to provide three numbers between 1 and 3.
+First number selects the floor: 1 (First), 2 (Second), 3 (Third).
 Second and third correspond to the coordenates of rows and columns
 within floor, respectively.
-Your (Y) selection will be marked with a Y.
-Computer/machine moves first, marking the selection as M
+Your selection will be marked with a 'O'.
+Computer/machine moves first, marking the selection as 'X'
 To win the game you need either of the following
 - Win two floors as in a conventional tic tac toe or,
 - Connect the three floors with a vertical line

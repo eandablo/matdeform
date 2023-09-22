@@ -88,10 +88,10 @@ def example():
     print('In the example, the machine won by 2nd option')
     print('linking vertically all floors with positions')
     print('in row = 1 and column = 2')
-    floor_names = ['Bottom', 'Mid', 'Top']
+    floor_names = ['Third', 'Second', 'First']
     for name in floor_names:
         floor_example = GameFloor(name)
-        floor_example.floor_squares[0][1] = 'M'
+        floor_example.floor_squares[0][1] = 'X'
         floor_example.print_floor()
     print('Enjoy playing')
 
@@ -101,7 +101,7 @@ def play_game():
     random_machine_move()
     while True:
         get_user_move()
-        win_flag = check_win('Y')
+        win_flag = check_win('O')
         if win_flag:
             art.tprint('CONGRATS')
             art.tprint('You Win')
@@ -111,7 +111,7 @@ def play_game():
             art.tprint('THIS IS A TIE')
             break
         machine_floor_move()
-        win_flag = check_win('M')
+        win_flag = check_win('X')
         if win_flag:
             art.tprint('YOU LOSE')
             art.tprint('TRY AGAIN')
@@ -127,7 +127,7 @@ def random_machine_move():
     creates a random move from the machine
     """
     floor_random = np.random.randint(3, size=3)
-    update_floor(floor_random, 'M')
+    update_floor(floor_random, 'X')
 
 
 def update_floor(data, mover):
@@ -138,7 +138,7 @@ def update_floor(data, mover):
     finally prints the layout
     """
     floors[data[0]].assign_value(data[1], data[2], mover)
-    if mover == 'M':
+    if mover == 'X':
         for floor in floors:
             print(floor.print_floor())
 
@@ -155,26 +155,26 @@ def get_user_move():
         print('Please chose your move, providing 3 numbers from 1 to 3')
         user_move = []
         while True:
-            move = input('Enter floor number, 1 for Bottom, 2 '
-                         + 'for mid or 3 for top:\n')
+            move = input('Enter floor number, 1 for First, 2 '
+                         + 'for Second or 3 for Third:\n')
             if validate_number(move, 3):
                 break
-        user_move.append(int(move)-1)
+        user_move.append(3 - int(move))
         while True:
             move = input('Enter the row position:\n')
             if validate_number(move, 3):
                 break
-        user_move.append(int(move)-1)
+        user_move.append(int(move) - 1)
         while True:
             move = input('Enter the column position:\n')
             if validate_number(move, 3):
                 break
-        user_move.append(int(move)-1)
+        user_move.append(int(move) - 1)
         if empty_point(user_move):
             break
         else:
             print('Space is not free, please choose a free point')
-    update_floor(user_move, 'Y')
+    update_floor(user_move, 'O')
 
 
 def validate_number(num, max_num):
@@ -213,29 +213,29 @@ def machine_floor_move():
     Decides the next move from the machine by analising the floors
     Calls the update function with the selected move
     """
-    win_move = find_critical_column('M')  # winning move by column
+    win_move = find_critical_column('X')  # winning move by column
     if win_move:
-        update_floor(win_move, 'M')
+        update_floor(win_move, 'X')
         return
-    block_move = find_critical_column('Y')  # blocking move by column
+    block_move = find_critical_column('O')  # blocking move by column
     if block_move:
-        update_floor(block_move, 'M')
+        update_floor(block_move, 'X')
         return
-    win_move = find_critical_row_floor('M', 'Y')
+    win_move = find_critical_row_floor('X', 'O')
     if win_move:
-        update_floor(win_move, 'M')
+        update_floor(win_move, 'X')
         return
-    win_move = find_critical_diagonal_floor('M', 'Y')
+    win_move = find_critical_diagonal_floor('X', 'O')
     if win_move:
-        update_floor(win_move, 'M')
+        update_floor(win_move, 'X')
         return
-    block_move = find_critical_row_floor('Y', 'M')
+    block_move = find_critical_row_floor('O', 'X')
     if block_move:
-        update_floor(block_move, 'M')
+        update_floor(block_move, 'X')
         return
-    block_move = find_critical_diagonal_floor('Y', 'M')
+    block_move = find_critical_diagonal_floor('O', 'X')
     if block_move:
-        update_floor(block_move, 'M')
+        update_floor(block_move, 'X')
         return
     vertical_attack()
 
@@ -355,10 +355,10 @@ def find_critical_column(mover):
     Find columns with potential win for mover
     returns a 3D position if a empty space is found
     """
-    if mover == 'M':
-        contender = 'Y'
+    if mover == 'X':
+        contender = 'O'
     else:
-        contender = 'M'
+        contender = 'X'
     column_sum = sumarize_columns(mover)
     column_sum_contender = sumarize_columns(contender)
     for i in range(3):
@@ -375,11 +375,11 @@ def vertical_attack():
     if potential_line:
         floor_num = empty_in_line(potential_line)
         move = [floor_num, potential_line[0], potential_line[1]]
-        update_floor(move, 'M')
+        update_floor(move, 'X')
         return
     else:
         move = machine_kernel_move()
-        update_floor(move, 'M')
+        update_floor(move, 'X')
         return
 
 
@@ -388,8 +388,8 @@ def vertical_explore():
     searches for inter-floor vertical lines
     with only on machine move and no contender positions
     """
-    column_sum = sumarize_columns('M')
-    column_sum_contender = sumarize_columns('Y')
+    column_sum = sumarize_columns('X')
+    column_sum_contender = sumarize_columns('O')
     for i in range(3):
         for j in range(3):
             if column_sum[i, j] == 1 and column_sum_contender[i, j] == 0:
@@ -429,7 +429,7 @@ def find_empty_space_column(data, data_contender, i, j):
 def summarize_floor(data, user):
     """
     converts data variable containing a floor into a numpy matrix
-    data takes a floor class and user takes either 'M' or 'Y'
+    data takes a floor class and user takes either 'X' or 'O'
     """
     floor_matrix = np.zeros((3, 3), dtype=int)
     floor_matrix_mirror = np.zeros((3, 3), dtype=int)
@@ -492,9 +492,9 @@ def calculate_prob_matrix(floor):
     user_multiplier = np.zeros((3, 3), dtype=int)
     for i in range(3):
         for j in range(3):
-            if floor.floor_squares[i][j] == 'M':
+            if floor.floor_squares[i][j] == 'X':
                 machine_multiplier[i, j] = 1
-            if floor.floor_squares[i][j] == 'Y':
+            if floor.floor_squares[i][j] == 'O':
                 user_multiplier[i, j] = 1
     p_matrix = np.add(np.matmul(machine_multiplier, machine_kernel),
                       np.matmul(user_multiplier, user_kernel))
@@ -504,8 +504,8 @@ def calculate_prob_matrix(floor):
         for j in range(3):
             if merge_matrix[i, j] == 1:
                 p_matrix[i, j] = 0
-    count_1 = summarize_floor(floor.floor_squares, 'M')
-    count_2 = summarize_floor(floor.floor_squares, 'Y')
+    count_1 = summarize_floor(floor.floor_squares, 'X')
+    count_2 = summarize_floor(floor.floor_squares, 'O')
     not_available = 3 in count_1 or 3 in count_2
     if not_available:
         p_matrix[:, :] = 0
@@ -514,7 +514,7 @@ def calculate_prob_matrix(floor):
 
 # variable floors is a structure containing all three separated floors
 # each floor structure is obtained by assigning a class GameFloor
-floors = [GameFloor('Bottom'), GameFloor('Mid'), GameFloor('Top')]
+floors = [GameFloor('Third'), GameFloor('Second'), GameFloor('First')]
 
 # define kernels as random matrix for both machine and user
 machine_kernel = np.random.rand(3, 3)
@@ -546,8 +546,8 @@ def check_empty_spaces():
     """
     empties = 0
     for floor in floors:
-        count_1 = summarize_floor(floor.floor_squares, 'M')
-        count_2 = summarize_floor(floor.floor_squares, 'Y')
+        count_1 = summarize_floor(floor.floor_squares, 'X')
+        count_2 = summarize_floor(floor.floor_squares, 'O')
         available = 3 not in count_1 and 3 not in count_2
         if available:
             empties += floor.count_empties()
