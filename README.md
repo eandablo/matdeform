@@ -19,36 +19,63 @@ On the other hand, a tie will be declared if at a point of the game, there is no
 
 ## Features
 
-On running the application, a menu is provided to select a number to either be directed to instructions or starting the game.
+A menu gives the user the opportunity to choose between instructions or start playing the game.
 
 ![welcome](assets/images/welcome.png)
 
-If in the menu selection, no number is provided or the number is not either 1 or 2, an error is displayed giving another chance to provide an appropriate entry.
+The selection is done by choosing a number, 1 for instructions or 2 for play. If in the menu selection, no number is provided or the number is not either 1 or 2, an error is displayed giving another chance to provide an appropriate entry.
 
 ![welcome-error](assets/images/welcome-error.png)
 
-Selecting 1, the first part of the instructions are displayed.
+Instruction how to play the game are complemented with an example to unsdertand how to win and select a move. 
 
 ![instructions](assets/images/instructions.png)
 
-After finishing the first read, you must press enter to find an example. The example provides an image of how a win by linking all floors looks.
 
 ![example](assets/images/example.png)
 
-After pressing enter again you will be redirected to the game.
+Selecting 2, the game will start with the computer move as shown bellow.
 
 ![game-start](assets/images/game-1.png)
+
+The user moves are taken with 3 entries, each consisting of a number between 1 and 3. Entry errors are handled with the same function used for the menu.
+
+![entry-error](assets/images/entry-error.png)
+
+Moves made by the computer are of two kind.
+
+1. Deterministic moves: The algorithm searches for moves to block winning posibilities created by the user, scoring by culminating potential opportunities creating by the computer or generating "attacks" by creating potential opportunities to win by connecting the floors (second option). 
+
+2. Stochastic moves: If deterministic moves are not neccesary at the moment, the algorithm decides for a stochastic option by creating moves using a Bayes-like approach with random likelihood matrices for both, user and computer previous positions. This algorithm is a simple approach to allow the computer learning from the user choices and create a medium level of difficulty, providing an entertaining and challenging experience for the user.
+
 
 ## Data model
 
 Each floor in the program is created as an instance of a class Floor. 
-The Floor class is designed to alot 
+The Floor class is designed to lodge the moves in an 2D array. It contains three functions: (i) assign_values updates the floor with either computer or user moves, count_empties counts the available spaces in the floors arrays and print_floor displays in console the current state of the floor.
+
 
 ## Testing
 
+### Menu entry handling
+
+The initial menu is capable to handle exceptions to ensure an appropriate number is entered to choose either instructions of start playing the game as shown below.
+
+### User move entry handling
+
+
+
+![menu-entry-handling](assets/images/test-menu-entries.png)
+
+![floor-entry-handling](assets/images/floor-error-handling.png)
+
+![row-entry-handling](assets/images/row-error-handling.png)
+
+![row-entry-handling](assets/images/column-error-handling.png)
 
 ## Bugs
 
+No bugs were found.
 
 ## Deployment
 
