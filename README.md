@@ -63,15 +63,44 @@ The initial menu is capable to handle exceptions to ensure an appropriate number
 
 ### User move entry handling
 
-
+The error handling of menu was thoroughly tested and showed capable of reject invalid entries.
 
 ![menu-entry-handling](assets/images/test-menu-entries.png)
+
+The same testing was performed for the three neccessary entries for the user move. As seen in the figures below for floor, row and column, respectively, the interface rejects any invalid entry.
 
 ![floor-entry-handling](assets/images/floor-error-handling.png)
 
 ![row-entry-handling](assets/images/row-error-handling.png)
 
 ![row-entry-handling](assets/images/column-error-handling.png)
+
+The algorithm must also prevent the user from selecting a space already busy as shown in the image below.
+
+![handling-busy](assets/images/busy-position.png)
+
+### Computer intelligence
+
+On testing, the computer proved being capable to block user opportunities and create winning opportunities. In the image below the computer had blocked the user winning option in the third floor and subsequently created an opportunity to win by connecting vertically all floors. This represents a challenge to the user, since it requires attention to spot this attempts.
+
+![computer-block](assets/images/computer-schemming.png)
+
+In this case, the computer managed to create the vertical option, but also an opportunity to win the second floor by forcing the user to block the vertical "attack", leaving the computer to connect the third row in the second floor.
+
+Further testing proved the computer capacity to win by either:
+- option 1 (winning two floors) 
+
+![computer-two-floor-win](assets/images/computer-two-floor-win.png)
+
+or 
+
+- option two (connecting floors vertically)
+
+![computer-vertica-win](assets/images/computer-vertical-win.png)
+
+The computer gracefully will advice the user they you have lost.
+
+![losing-message](assets/images/losing-notice.png)
 
 ## Bugs
 
