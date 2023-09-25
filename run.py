@@ -57,7 +57,7 @@ def start_game():
             break
     if int(menu_choice) == 1:
         instructions()
-        play_game()
+        start_game()
     else:
         play_game()
 
@@ -77,7 +77,7 @@ def instructions():
         print(line)
     input('Press enter to see example\n')
     example()
-    input('Press enter to start playing\n')
+    input('Press enter to go back to the menu\n')
 
 
 def example():
@@ -88,8 +88,8 @@ def example():
     print('In the example, the machine won by 2nd option')
     print('linking vertically all floors with positions')
     print('in row = 1 and column = 2')
-    floor_names = ['Third', 'Second', 'First']
-    for name in floor_names:
+    FLOOR_NAMES = ['Third', 'Second', 'First']
+    for name in FLOOR_NAMES:
         floor_example = GameFloor(name)
         floor_example.floor_squares[0][1] = 'X'
         floor_example.print_floor()

@@ -1,32 +1,65 @@
-![CI logo](https://codeinstitute.s3.amazonaws.com/fullstack/ci_logo_small.png)
+# 3D Tic Tac
 
-Welcome,
+3D Tic Tac is a 3D version of the loved tic tac toe game. The game runs in the code institute deployment terminal.
+The user will play a game vs the computer, which has been equipped with sufficient intelligence to provide the user with a stimulating challenge.
 
-This is the Code Institute student template for deploying your third portfolio project, the Python command-line project. The last update to this file was: **March 14, 2023**
+[You can visit the deployed proyect here](https://new-tick-tac-toe-9fb1e1ca8d45.herokuapp.com/)
 
-## Reminders
+## How to play
 
-- Your code must be placed in the `run.py` file
-- Your dependencies must be placed in the `requirements.txt` file
-- Do not edit any of the other files or your code may not deploy properly
+In this game, the user will battle the machine in three floors simultaneously. Each floor consisting of the original 3 x 3 grid tic tac toe.
 
-## Creating the Heroku app
+The game will start by showing the three floors. The machine will start the game selecting a position in any of the three floors. The user, then will be asked to select a move by giving three numbers, first for the floor, second and third for the row and column in the floor. The computer selection will be marked by 'X', whereas the user position will be marked as 'O'. After a new computer selection, the updated floors will be displayed again. This exchange will continue , until a player wins or a tie is declared. To win, one of two conditions are met by either player:
 
-When you create the app, you will need to add two buildpacks from the _Settings_ tab. The ordering is as follows:
+1. One of the players wins two out of three floors. Winning a floor, requires either player to connect one column, one row or a diagonal. 
 
-1. `heroku/python`
-2. `heroku/nodejs`
+2. One of the players connects all three floors by filling the three positions of any vertical line.
 
-You must then create a _Config Var_ called `PORT`. Set this to `8000`
+On the other hand, a tie will be declared if at a point of the game, there is no possibility for any of the player to fullfil the first option above.
 
-If you have credentials, such as in the Love Sandwiches project, you must create another _Config Var_ called `CREDS` and paste the JSON into the value field.
+## Features
 
-Connect your GitHub repository and deploy as normal.
+On running the application, a menu is provided to select a number to either be directed to instructions or starting the game.
 
-## Constraints
+![welcome](assets/images/welcome.png)
 
-The deployment terminal is set to 80 columns by 24 rows. That means that each line of text needs to be 80 characters or less otherwise it will be wrapped onto a second line.
+If in the menu selection, no number is provided or the number is not either 1 or 2, an error is displayed giving another chance to provide an appropriate entry.
 
----
+![welcome-error](assets/images/welcome-error.png)
 
-Happy coding!
+Selecting 1, the first part of the instructions are displayed.
+
+![instructions](assets/images/instructions.png)
+
+After finishing the first read, you must press enter to find an example. The example provides an image of how a win by linking all floors looks.
+
+![example](assets/images/example.png)
+
+After pressing enter again you will be redirected to the game.
+
+![game-start](assets/images/game-1.png)
+
+## Data model
+
+Each floor in the program is created as an instance of a class Floor. 
+The Floor class is designed to alot 
+
+## Testing
+
+
+## Bugs
+
+
+## Deployment
+
+The project was deployed in the Code Institute's mock terminal for Heroku followin the steps bellow:
+
+1. Fork or clone this repository
+2. Create a new Heroku app
+3. Set the buildpacks to Python and NodeJS in that order
+4. Link the Heroku app to the repository
+5. Click on Deploy
+
+## Credits
+
+- Code Institute for providing the mock template user for this project deployement
