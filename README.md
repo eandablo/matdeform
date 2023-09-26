@@ -53,6 +53,7 @@ Moves made by the computer are of two kind.
 
 Each floor in the program is created as an instance of a class Floor. 
 The Floor class is designed to lodge the moves in an 2D array. It contains three functions: (i) assign_values updates the floor with either computer or user moves, count_empties counts the available spaces in the floors arrays and print_floor displays in console the current state of the floor.
+This approach will allow easy upgrade to increase the number of floors in the game by creating additional instances of the class Floor.
 
 
 ## Testing
@@ -98,13 +99,39 @@ or
 
 ![computer-vertica-win](assets/images/computer-vertical-win.png)
 
-The computer gracefully will advice the user they you have lost.
+The computer gracefully will advice the user they have lost.
 
 ![losing-message](assets/images/losing-notice.png)
 
+### Admitting defeat
+
+The user has a much higher chance to deafeat the computer by winning two floors (option 1) than by a vertical connection of floors (option 2). This is due to the computer algorith to prioritize blocking vertical "attacks". Although the user can use option 2 as a threat to force the computer into a user-favourable move. The image below shows how the user has set up a succesful strategy to win a second floor to conclude the game.
+
+![user-win-strategy](assets/images/user-prewin.png)
+
+After user making the appropriate move to claim victory the computer immediately admits defeat by the following message:
+
+![user-win](assets/images/user-win.png)
+
+### Declaring a tie
+
+In this game, a tie is a likely possibility. This will happen if the algorithm finds that there are no options left to win by the first option (winning two floors). This is because at this point, option 2 relies only on a mistake, and the computer will not do that, rendering a non-fair ganme.
+
+![pre-tie-setup](assets/images/tie-setup.png)
+
+The image above shows a tie set-up. After the user choosing the last available spot in the first floor the machine sends a message to indicate a tie.
+
+![tie-message](assets/images/tie-message.png)
+
+### PEP8 validator
+
+The python code was validated using the PEP8 validator provided by the code institute. As shown below no errors or problems were found.
+
+![pep8](assets/images/pep8-validator.png)
+
 ## Bugs
 
-No bugs were found.
+No bugs were found during extensive testing of the deployed app.
 
 ## Deployment
 
@@ -119,3 +146,7 @@ The project was deployed in the Code Institute's mock terminal for Heroku follow
 ## Credits
 
 - Code Institute for providing the mock template user for this project deployement
+
+- Python code was created by Efren Andablo Reyes
+
+- Acknowldgement to my mentor Dario for his great guidance diring this project development
