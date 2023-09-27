@@ -3,7 +3,7 @@ Your oponent will be the computer.
 To make your move, you will be asked to provide three numbers between 1 and 3.
 First number selects the floor: 1 (First), 2 (Second), 3 (Third).
 Second and third correspond to the coordenates of rows and columns
-within floor, respectively.
+within floors, respectively.
 Your selection will be marked with a 'O'.
 Computer/machine moves first, marking the selection as 'X'
 To win the game you need either of the following

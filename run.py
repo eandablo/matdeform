@@ -50,9 +50,9 @@ def start_game():
     tprint('3D TIC TAC')
     print('1 .- Instructions')
     print('2 .- Play')
-    print('Please choose by entering the correct number')
+    print('Please choose from the options above')
     while True:
-        menu_choice = input('Enter either the number 1 or 2:\n')
+        menu_choice = input('Enter 1 for instructions or 2 to play:\n')
         if validate_number(menu_choice, 2):
             break
     if int(menu_choice) == 1:
