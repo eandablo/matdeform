@@ -193,11 +193,7 @@ def validate_number(num, max_num):
     except ValueError:
         print(f'Invalid entry: entry must be an integer')
         return False
-    try:
-        int(num)
-        if int(num) < 1 or int(num) > max_num:
-            raise ValueError
-    except ValueError:
+    if int(num) < 1 or int(num) > max_num:
         print(f'Invalid position: number must be between 1 and {max_num}')
         return False
     return True
