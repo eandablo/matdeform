@@ -135,6 +135,8 @@ No bugs were found during extensive testing of the deployed app.
 
 ## Deployment
 
+### GitHub Pages
+
 The project was deployed in the Code Institute's mock terminal for Heroku followin the steps bellow:
 
 1. Fork or clone this repository
@@ -142,6 +144,23 @@ The project was deployed in the Code Institute's mock terminal for Heroku follow
 3. Set the buildpacks to Python and NodeJS in that order
 4. Link the Heroku app to the repository
 5. Click on Deploy
+
+### Forking the GitHub Repository
+
+By forking the GitHub Repository we make a copy of the original repository on our GitHub account to view and/or make changes without affecting the original repository by using the following steps...
+
+1. Log in to GitHub and locate the [GitHub Repository](https://github.com/eandablo/differential)
+2. At the top of the Repository (not top of page) just above the "Settings" Button on the menu, locate the "Fork" Button.
+3. You should now have a copy of the original repository in your GitHub account.
+
+### Making a Local Clone
+
+1. Log in to GitHub and locate the [GitHub Repository](https://github.com/eandablo/differential)
+2. Under the repository name, click "Clone or download".
+3. To clone the repository using HTTPS, under "Clone with HTTPS", copy the link.
+4. Open Git Bash
+5. Change the current working directory to the location where you want the cloned directory to be made.
+6. Type `git clone`, and then paste the URL you copied in Step 3.
 
 ## Credits
 
