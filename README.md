@@ -135,7 +135,7 @@ No bugs were found during extensive testing of the deployed app.
 
 ## Deployment
 
-### GitHub Pages
+### Heroku
 
 The project was deployed in the Code Institute's mock terminal for Heroku followin the steps bellow:
 
